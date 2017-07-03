@@ -1,4 +1,4 @@
-# mayaC++API
+# MayaC++API
 maya C++ API
 
 MY workbook for Maya C++ api
