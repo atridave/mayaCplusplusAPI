@@ -1,0 +1,2 @@
+# mayaCplusplusAPI
+maya C++ API
