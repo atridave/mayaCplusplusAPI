@@ -1,4 +1,5 @@
 #include "molecule1.h"
+#include <maya\MFnPlugin.h>
 
 MStatus molecule1::doIt(const MArgList & argList)
 {
@@ -90,7 +91,7 @@ MStatus molecule1::doIt(const MArgList & argList)
 			stat.perror("Unable to create Mesh");
 
 		meshFn.updateSurface();
-		MString cmd("sets -e -fe initialShadingGroup");
+		MString cmd("sets -e -fe initialShadingGroup " );
 		cmd += meshFn.name();
 		MGlobal::executeCommand(cmd);
 		
@@ -219,3 +220,20 @@ MStatus genRod(const MPoint &p0, const MPoint &p1, const double radius, const un
 	return MS::kSuccess;
 }
 
+
+
+MStatus initializePlugin(MObject obj)
+{
+	MFnPlugin plugin(obj, "Atri Dave", "1.0", "Any");
+	MStatus status = plugin.registerCommand("molecule1", molecule1::creator);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+	return status;
+}
+
+MStatus uninitializePlugin(MObject obj)
+{
+	MFnPlugin plugin(obj);
+	MStatus status = plugin.deregisterCommand("molecule1");
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+	return status;
+}
