@@ -24,29 +24,30 @@ MStatus createSphere::doIt(const MArgList & argList)
 	MPointArray vertexArray;
 	MIntArray polyCount;
 	int numPolygones;
-	MString txt = "";
+	MIntArray polyConnects;
+	//MString txt = "";
 
 
 	
-	makeSphereData(radius, segments, vertexArray, numPolygones, polyCount);	
+	makeSphereData(radius, segments, vertexArray, numPolygones, polyCount, polyConnects);
 	
 	
-	txt += vertexArray.length();
+	//txt += vertexArray.length();
 	
 
-	MGlobal::displayInfo(txt);
+	//MGlobal::displayInfo(txt);
 
 
-	//myMesh = meshfn.create(vertexArray.length(), numPolygones, vertexArray, polyCount, polyConnects, MObject::kNullObj, &stat);
+	myMesh = meshfn.create(vertexArray.length(), numPolygones, vertexArray, polyCount, polyConnects, MObject::kNullObj, &stat);
 
-	//if (!stat)
-	//	stat.perror("Unable to create Mesh");
+	if (!stat)
+		stat.perror("Unable to create Mesh");
 
-	//meshfn.updateSurface();
+	meshfn.updateSurface();
 
 
-	//MString cmd("maya.cmds.sets('" + meshfn.name() + "', e = 1, fe = 'initialShadingGroup')");
-	//MGlobal::executePythonCommand(cmd);
+	MString cmd("maya.cmds.sets('" + meshfn.name() + "', e = 1, fe = 'initialShadingGroup')");
+	MGlobal::executePythonCommand(cmd);
 
 	return MS::kSuccess;
 }
@@ -57,10 +58,11 @@ void * createSphere::creator()
 }
 
 
-MStatus makeSphereData(const double radius, const int segments, MPointArray &verts,int &numPolygones, MIntArray &polyCount)
+MStatus makeSphereData(const double radius, const int segments, MPointArray &verts,int &numPolygones, MIntArray &polyCount,MIntArray &polyConnects)
 {
 	verts.clear();
 	polyCount.clear();
+	polyConnects.clear();
 	MPoint p;	
 
 	for (int i = 0; i < (segments+1); i++)
@@ -96,23 +98,19 @@ MStatus makeSphereData(const double radius, const int segments, MPointArray &ver
 
 
 
-	//for (int i = 0; i < (segments); i++)
-	//{
-	//	for (int j = 0; j < segments + 1; j++)
-	//	{
+	for (int i = 0; i < segments; i++)
+	{
+		for (int j = 0; j < segments; j++)
+		{
+			polyConnects.append(linerIndex(i, j, segments + 1, segments+1));
+			polyConnects.append(linerIndex(i, j + 1, segments + 1, segments+1));
+			polyConnects.append(linerIndex(i + 1, j + 1, segments + 1, segments+1));
+			polyConnects.append(linerIndex(i + 1, j, segments + 1, segments+1));						
+		}
 
-	//	}
-	//}
+	}
 	return MStatus::kSuccess;
 }
-
-
-
-
-
-
-
-
 
 
 

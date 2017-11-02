@@ -25,7 +25,7 @@ public:
 	static void* creator();
 };
 
-MStatus makeSphereData(const double radius, const int segments, MPointArray &verts, int &numPolygones, MIntArray &polyCount);
+MStatus makeSphereData(const double radius, const int segments, MPointArray &verts, int &numPolygones, MIntArray &polyCount, MIntArray &polyConnects);
 
 double mapRange(double value, double minX, double maxX, double minY, double maxY)
 {
@@ -35,4 +35,9 @@ double mapRange(double value, double minX, double maxX, double minY, double maxY
 	//double unitVal = (double((value - minX) / xDiff));
 	//double newValue = minY + (unitVal*yDiff);
 	return (minY + ((double((value - minX) / (maxX - minX)))*(maxY - minY)));
+}
+
+int linerIndex(const int r, const int c, const int nRows, const int nCols)
+{
+	return ((r%nRows)*nCols) + (c%nCols);
 }
