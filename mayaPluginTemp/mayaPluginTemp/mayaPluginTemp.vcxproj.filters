@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mayaPlugin.cpp">
+    <ClCompile Include="mayaPluginTemp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
