@@ -27,7 +27,7 @@ public:
 
 
 
-MStatus makeRodData(const MPoint &p0, const MPoint &p1, const double radius, const int segments);
+MStatus makeRodData(const MPoint &p0, const MPoint &p1, const double radius, const int segments, MPointArray &vertexs, int &numPolygones, MIntArray &polyCount, MIntArray &polyConnects);
 
 
 
