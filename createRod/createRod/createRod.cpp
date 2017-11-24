@@ -41,6 +41,8 @@ MStatus createRod::doIt(const MArgList & argList)
 
 	myMesh = meshfn.create(vertexArray.length(), numPolygones, vertexArray, polyCount, polyConnects, MObject::kNullObj, &stat);
 
+	MGlobal::displayInfo(txt);
+
 	if (!stat)
 		stat.perror("Unable to create Mesh");
 
@@ -63,10 +65,12 @@ MStatus makeRodData(const MPoint &p0, const MPoint &p1, const double radius, con
 {
 	
 	vertexArray.clear();
+	polyConnects.clear();
 
 
 	numPolygones = segments;
 	polyCount.setLength(segments);
+
 
 	MVector vec(p1 - p0);
 	MVector up(0.0, 1.0, 0.0);
@@ -85,8 +89,8 @@ MStatus makeRodData(const MPoint &p0, const MPoint &p1, const double radius, con
 	MPoint p;
 	double x, z;
 
-
-
+	
+	int j = 0;
 	for (int i = 0; i <segments + 1; i++)
 	{
 		double angle = mapRange(i, 0, segments, 0, 2 * M_PI);
@@ -106,25 +110,25 @@ MStatus makeRodData(const MPoint &p0, const MPoint &p1, const double radius, con
 
 		polyCount[i] = 4;
 
-		polyConnects.append(i);
-		polyConnects.append(i+1);
-		polyConnects.append(i+3);
-		polyConnects.append(i+2);
-
-		//MString cmd = ("maya.cmds.spaceLocator(p=(");
-		//cmd += p.x;
-		//cmd += ",";
-		//cmd += p.y;
-		//cmd += ",";
-		//cmd += p.z;
-		//cmd += "))";
-		//MGlobal::executePythonCommand(cmd);
-
-
+		
+		//polyConnects.append(i);
+		//polyConnects.append(i + 1);
+		//polyConnects.append(i + 3);
+		//polyConnects.append(i + 2);
 
 	}
 
-	
+	for (int i = 0; i < (segments)*2; i++)
+	{
+		polyConnects.append(i);
+		polyConnects.append(i + 1);
+		polyConnects.append(i + 3);
+		polyConnects.append(i + 2);
+		i += 1;
+	}
+
+
+
 
 	//for (int i = 0; i < (segments+1)*2; i++)
 	//{
