@@ -239,6 +239,24 @@ MStatus molecule2Cmd::redoIt()
 
 	}
 
+	MStatus molecule2Cmd::undoIt()
+	{
+		MDGModifier dgMod;
+		MFnDagNode dagFn;
+		MObject child;
+
+		unsigned int i;
+		for (i = 0; i < objectTransforms.length(); i++)
+		{
+			dagFn.setObject(objectTransforms[i]);
+			child = dagFn.child(0);
+			dgMod.deleteNode(child);
+			dgMod.deleteNode(objectTransforms[i]);
+		}
+		return dgMod.doIt();
+			
+	}
+
 
 
 
@@ -257,9 +275,17 @@ void * molecule2Cmd::creator()
 
 MStatus genBall(const MPoint &center, const double radius, const unsigned int nSegs, int &nPolys, MPointArray &verts, MIntArray &polyCount, MIntArray &polyConnects, const bool genUVs, MFloatArray &uCoords, MFloatArray &vCoords, MIntArray &fvUVIDs)
 {
+
 	verts.clear();
 	polyCount.clear();
 	polyConnects.clear();
+
+	if (genUVs)
+	{
+		uCoords.clear();
+		vCoords.clear();
+		fvUVIDs.clear();
+	}
 
 	int nAzimuthSegs = nSegs * 2;
 	int nZenithSegs = nSegs;
@@ -291,7 +317,36 @@ MStatus genBall(const MPoint &center, const double radius, const unsigned int nS
 			verts.append(p);
 		}
 	}
+	
+	int nUCols = nAzimuthSegs + 1;
+	int nVRows = nZenithSegs + 1;
 
+	if (genUVs)
+	{
+		int nUVCoords = nUCols*nVRows;
+		uCoords.setLength(nUVCoords);
+		uCoords.clear();
+		vCoords.setLength(nUVCoords);
+		vCoords.clear();
+
+		float uIncr = 1.0f / nAzimuthSegs;
+		float vIncr = 1.0f / nZenithSegs;
+
+		float u, v;
+		int ui, vi;
+
+		for (vi = 0, v = 0.0; vi < nVRows; vi++, v += vIncr)
+		{
+			for (ui = 0, u = 0.0; ui < nUCols; ui++, u += uIncr)
+			{
+				uCoords.append(u);
+				vCoords.append(v);
+			}
+		}
+
+
+	}
+	
 	nPolys = nAzimuthSegs*nZenithSegs;
 	polyCount.setLength(nPolys);
 	int i;
@@ -307,16 +362,32 @@ MStatus genBall(const MPoint &center, const double radius, const unsigned int nS
 			polyConnects.append(linerIndex(zeni, azi + 1, nZenithPts, nAzimuthPts));
 			polyConnects.append(linerIndex(zeni + 1, azi + 1, nZenithPts, nAzimuthPts));
 			polyConnects.append(linerIndex(zeni + 1, azi, nZenithPts, nAzimuthPts));
+
+			if (genUVs)
+			{
+				fvUVIDs.append(linerIndex(zeni, azi, nVRows, nUCols));
+				fvUVIDs.append(linerIndex(zeni, azi+1, nVRows, nUCols));
+				fvUVIDs.append(linerIndex(zeni+1, azi + 1, nVRows, nUCols));
+				fvUVIDs.append(linerIndex(zeni+1, azi, nVRows, nUCols));
+			}
 		}
 	}
 	return MS::kSuccess;
 }
 
-MStatus genRod(const MPoint &p0, const MPoint &p1, const double radius, const unsigned int nSegs, int &nPolys, MPointArray &verts, MIntArray &polyCounts, MIntArray &polyConnects)
+MStatus genRod(const MPoint &p0, const MPoint &p1, const double radius, const unsigned int nSegs, int &nPolys, MPointArray &verts, MIntArray &polyCounts, MIntArray &polyConnects,
+	const bool genUVs,MFloatArray &uCoords, MFloatArray &vCoords,MIntArray &fvUVIDS)
 {
 	verts.clear();
 	polyCounts.clear();
 	polyConnects.clear();
+
+	if (genUVs)
+	{
+		uCoords.clear();
+		vCoords.clear();
+		fvUVIDS.clear();
+	}
 
 	unsigned int nCirclePts = nSegs;
 	unsigned int nVerts = nCirclePts * 2;
@@ -349,6 +420,32 @@ MStatus genRod(const MPoint &p0, const MPoint &p1, const double radius, const un
 		p += vec;
 		verts[i + nCirclePts] = p;
 	}
+
+	int nUCols = nSegs + 1;
+	int nVRows = 2;
+
+	if (genUVs)
+	{
+		int nUVCoords = nUCols*nVRows;
+		uCoords.setLength(nUVCoords);
+		uCoords.clear();
+		vCoords.setLength(nUVCoords);
+		vCoords.clear();
+		float uIncr = 1.0f / nSegs;
+		float u, v;
+		int ui, vi;
+
+		for (vi = 0, v = 0.0; vi < nVRows; vi++, v += 1.0)
+		{
+			for (ui = 0,u = 0.0; ui < nUCols; ui++, u += uIncr)
+			{
+				uCoords.append(u);
+				vCoords.append(v);
+			}
+		}
+
+	}
+
 	nPolys = nSegs;
 	polyCounts.setLength(nPolys);
 
@@ -363,6 +460,14 @@ MStatus genRod(const MPoint &p0, const MPoint &p1, const double radius, const un
 		polyConnects.append(linerIndex(0, i + 1, 2, nCirclePts));
 		polyConnects.append(linerIndex(1, i + 1, 2, nCirclePts));
 		polyConnects.append(linerIndex(1, i, 2, nCirclePts));
+
+		if (genUVs)
+		{
+			fvUVIDS.append(linerIndex(0, i, nVRows, nUCols));
+			fvUVIDS.append(linerIndex(0, i+1, nVRows, nUCols));
+			fvUVIDS.append(linerIndex(1, i+1, nVRows, nUCols));
+			fvUVIDS.append(linerIndex(1, i, nVRows, nUCols));
+		}
 	}
 
 	return MS::kSuccess;
@@ -373,7 +478,7 @@ MStatus genRod(const MPoint &p0, const MPoint &p1, const double radius, const un
 MStatus initializePlugin(MObject obj)
 {
 	MFnPlugin plugin(obj, "Atri Dave", "1.0", "Any");
-	MStatus status = plugin.registerCommand("molecule2Cmd", molecule2Cmd::creator);
+	MStatus status = plugin.registerCommand("molecule2", molecule2Cmd::creator, molecule2Cmd::newSyntax);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 	return status;
 }
@@ -381,7 +486,7 @@ MStatus initializePlugin(MObject obj)
 MStatus uninitializePlugin(MObject obj)
 {
 	MFnPlugin plugin(obj);
-	MStatus status = plugin.deregisterCommand("molecule2Cmd");
+	MStatus status = plugin.deregisterCommand("molecule2");
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 	return status;
 }
