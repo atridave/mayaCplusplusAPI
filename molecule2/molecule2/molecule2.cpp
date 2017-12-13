@@ -241,6 +241,8 @@ MStatus molecule2Cmd::redoIt()
 
 	MStatus molecule2Cmd::undoIt()
 	{
+		MGlobal::displayInfo("I am undoing");
+
 		MDGModifier dgMod;
 		MFnDagNode dagFn;
 		MObject child;
@@ -253,17 +255,12 @@ MStatus molecule2Cmd::redoIt()
 			dgMod.deleteNode(child);
 			dgMod.deleteNode(objectTransforms[i]);
 		}
+		MGlobal::displayInfo("I am retuening do it ");
 		return dgMod.doIt();
 			
 	}
 
 
-
-
-bool molecule2Cmd::isUndoable()
-{
-	return true;
-}
 
 void * molecule2Cmd::creator()
 {

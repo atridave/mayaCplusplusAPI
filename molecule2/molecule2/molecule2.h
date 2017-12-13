@@ -28,7 +28,7 @@ public:
 	virtual MStatus doIt(const MArgList&);
 	virtual MStatus redoIt();
 	virtual MStatus undoIt();
-	virtual bool isUndoable();
+	virtual bool isUndoable() const { return true; }
 	static void* creator();
 	static MSyntax newSyntax();
 
