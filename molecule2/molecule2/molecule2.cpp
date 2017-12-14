@@ -256,7 +256,7 @@ MStatus molecule2Cmd::redoIt()
 			dgMod.deleteNode(objectTransforms[i]);
 		}
 		MGlobal::displayInfo("I am retuening do it ");
-		return dgMod.doIt();
+		return dgMod.undoIt();
 			
 	}
 
