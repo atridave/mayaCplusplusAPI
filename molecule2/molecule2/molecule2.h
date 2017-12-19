@@ -31,6 +31,7 @@ public:
 	virtual bool isUndoable() const { return true; }
 	static void* creator();
 	static MSyntax newSyntax();
+	MObjectArray objectTransforms;
 
 private:
 	MDistance radius;
@@ -38,7 +39,7 @@ private:
 	double ballRodRatio;
 	MDagPathArray selMeshes;
 
-	MObjectArray objectTransforms;
+	
 
 };
 
