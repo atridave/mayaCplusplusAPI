@@ -248,13 +248,14 @@ MStatus molecule2Cmd::redoIt()
 		MObject child;
 
 		unsigned int i;
-		int objcts = objectTransforms.length();
+		
 		for (i = 0; i < objectTransforms.length(); i++)
 		{
 			dagFn.setObject(objectTransforms[i]);
 			MGlobal::displayInfo(dagFn.name());
 			child = dagFn.child(0);
-			MGlobal::displayInfo(child.apiTypeStr());		
+			//MGlobal::displayInfo(child.apiTypeStr());
+			//child = objectTransforms[i];
 			
 			
 			dgMod.deleteNode(child);
