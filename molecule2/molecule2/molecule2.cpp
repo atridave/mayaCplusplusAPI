@@ -264,7 +264,7 @@ MStatus molecule2Cmd::redoIt()
 			
 		}
 		MGlobal::displayInfo("I am retuening do it ");
-		MGlobal::displayInfo("I changing it ");
+		MGlobal::displayInfo("I am changing it ");
 		return dgMod.undoIt();
 		
 	}
