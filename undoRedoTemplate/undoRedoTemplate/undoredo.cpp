@@ -22,7 +22,8 @@ MStatus deleteObj::redoIt()
 
 
 	MGlobal::deleteNode(selObj);
-	MGlobal::displayInfo("I have deleted the mesh");
+	MGlobal::displayInfo("I have deleted the mesh"); 
+
 	return MS::kSuccess;
 }
 
