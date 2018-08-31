@@ -5,6 +5,14 @@
 
 MStatus deleteObj::doIt(const MArgList & argList)
 {
+
+	MGlobal::displayInfo("I am in doit ");
+
+	return redoIt();
+}
+
+MStatus deleteObj::redoIt()
+{
 	MSelectionList selection;
 	MGlobal::getActiveSelectionList(selection);
 
@@ -15,10 +23,15 @@ MStatus deleteObj::doIt(const MArgList & argList)
 
 	MGlobal::deleteNode(selObj);
 	MGlobal::displayInfo("I have deleted the mesh");
-	
-
 	return MS::kSuccess;
 }
+
+MStatus deleteObj::undoIt()
+{
+	MGlobal::displayInfo("I am in undoing it ");
+	return MS::kSuccess;
+}
+
 
 
 
@@ -26,6 +39,7 @@ void * deleteObj::creator()
 {
 	return new deleteObj;
 }
+
 
 
 

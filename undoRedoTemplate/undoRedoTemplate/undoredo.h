@@ -11,6 +11,7 @@
 #include <maya/MIntArray.h>
 #include <maya/MItSelectionList.h>
 #include <maya/MItMeshEdge.h>
+#include <maya/MDagModifier.h>
 
 
 
@@ -23,5 +24,9 @@ public:
 	deleteObj() {};
 	virtual MStatus doIt(const MArgList& argList);
 	static void* creator();
+	virtual MStatus redoIt();
+	virtual MStatus undoIt();
+	MObjectArray objectTransforms;
+	virtual bool isUndoable() const { return true; }
 };
 

@@ -46,7 +46,6 @@ MStatus molecule2Cmd::doIt(const MArgList &args)
 	if (argData.isFlagSet(radiusFlag))
 	{
 		argData.getFlagArgument(radiusFlag, 0, radius);
-
 	}
 	if (argData.isFlagSet(segsFlag))
 	{
@@ -142,7 +141,7 @@ MStatus molecule2Cmd::redoIt()
 		newVCoords.clear();
 		newFvUVIDs.clear();
 
-		meshFn.getPoints(meshVerts);
+		meshFn.getPoints(meshVerts,MSpace::kWorld);
 		for (i = 0; i < meshVerts.length(); i++)
 		{
 			vertOffest = newVerts.length();
@@ -254,17 +253,14 @@ MStatus molecule2Cmd::redoIt()
 			dagFn.setObject(objectTransforms[i]);
 			MGlobal::displayInfo(dagFn.name());
 			child = dagFn.child(0);
-			MGlobal::displayInfo(child.apiTypeStr());
-			
-			
+			MGlobal::displayInfo(child.apiTypeStr());		
 			
 			dgMod.deleteNode(child);
 			dgMod.deleteNode(objectTransforms[i]);
+			MGlobal::displayInfo("I am deleting objects");
 			
 			
 		}
-		MGlobal::displayInfo("I am retuening do it ");
-		MGlobal::displayInfo("I am changing it ");
 		return dgMod.undoIt();
 		
 	}
