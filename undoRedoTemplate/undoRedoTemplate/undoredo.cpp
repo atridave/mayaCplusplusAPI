@@ -2,37 +2,40 @@
 #include "undoredo.h"
 
 
-
 MStatus deleteObj::doIt(const MArgList & argList)
-{
-
-	MGlobal::displayInfo("I am in doit ");
-
+{	
 	return redoIt();
 }
 
 MStatus deleteObj::redoIt()
 {
-	MSelectionList selection;
-	MGlobal::getActiveSelectionList(selection);
-
-	MObject selObj;
-
-	selection.getDependNode(0, selObj);
-
-
-	MGlobal::deleteNode(selObj);
-	MGlobal::displayInfo("I have deleted the mesh"); 
-
+	for (int j = 0; j < 3; j++)
+	{
+		MString cmd("maya.cmds.polyCube()");
+		MGlobal::executePythonCommand(cmd);
+		MSelectionList selection;
+		MGlobal::getActiveSelectionList(selection);
+		MObject selObj;
+		selection.getDependNode(j, selObj);
+		objectTransforms.append(selObj);
+		
+	}	
+		
 	return MS::kSuccess;
 }
 
 MStatus deleteObj::undoIt()
 {
-	MGlobal::displayInfo("I am in undoing it ");
+	
+	
+	for (unsigned int i = 0; i <objectTransforms.length(); i++)
+	{
+				
+		MGlobal::deleteNode(objectTransforms[i]);
+	}
+
 	return MS::kSuccess;
 }
-
 
 
 
@@ -40,9 +43,6 @@ void * deleteObj::creator()
 {
 	return new deleteObj;
 }
-
-
-
 
 
 
@@ -62,5 +62,4 @@ MStatus uninitializePlugin(MObject obj)
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 	return status;
 }
-
 

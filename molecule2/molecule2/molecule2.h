@@ -33,6 +33,7 @@ public:
 	static MSyntax newSyntax();
 	MObjectArray objectTransforms;
 
+
 private:
 	MDistance radius;
 	int segs;

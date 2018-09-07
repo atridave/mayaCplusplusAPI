@@ -15,9 +15,6 @@
 
 
 
-
-
-
 class deleteObj : public MPxCommand
 {
 public:
