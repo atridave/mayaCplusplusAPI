@@ -74,7 +74,7 @@ MStatus molecule2Cmd::doIt(const MArgList &args)
 
 	if (selMeshes.length() == 0)
 	{
-		MGlobal::displayWarning("select one or more meshes");
+		MGlobal::displayWarning("select meshes");
 		return MS::kFailure;
 	}
 
@@ -234,34 +234,20 @@ MStatus molecule2Cmd::redoIt()
 		cmd += " " + dagFn.name();
 	}
 	dagMod.commandToExecute(cmd);
-	return dagMod.doIt();
+	
+	return MS::kSuccess;
 
 	}
 
 	MStatus molecule2Cmd::undoIt()
 	{
-		MGlobal::displayInfo("I am undoing");
-
-		MDGModifier dgMod;
-		MFnDagNode dagFn;
-		MObject child;
-
-		unsigned int i;
-		
-		for (i = 0; i < objectTransforms.length(); i++)
+		for (unsigned int i = 0; i <objectTransforms.length(); i++)
 		{
-			dagFn.setObject(objectTransforms[i]);
-			MGlobal::displayInfo(dagFn.name());
-			child = dagFn.child(0);
-			MGlobal::displayInfo(child.apiTypeStr());		
-			
-			dgMod.deleteNode(child);
-			dgMod.deleteNode(objectTransforms[i]);
-			MGlobal::displayInfo("I am deleting objects");
-			
-			
+
+			MGlobal::deleteNode(objectTransforms[i]);
 		}
-		return dgMod.undoIt();
+
+		return MS::kSuccess;
 		
 	}
 
