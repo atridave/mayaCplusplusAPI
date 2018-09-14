@@ -9,7 +9,7 @@ MStatus deleteObj::doIt(const MArgList & argList)
 
 MStatus deleteObj::redoIt()
 {
-	for (int j = 0; j < 3; j++)
+	for (int j = 0; j < 1; j++)
 	{
 		MString cmd("maya.cmds.polyCube()");
 		MGlobal::executePythonCommand(cmd);
