@@ -466,7 +466,8 @@ MStatus genRod(const MPoint &p0, const MPoint &p1, const double radius, const un
 MStatus initializePlugin(MObject obj)
 {
 	MFnPlugin plugin(obj, "Atri Dave", "1.0", "Any");
-	MStatus status = plugin.registerCommand("molecule2", molecule3Cmd::creator, molecule3Cmd::newSyntax);
+	//MStatus status = plugin.registerCommand("molecule2", molecule3Cmd::creator, molecule3Cmd::newSyntax);
+	MStatus status = plugin.registerUI("molecule3CUI", "molecule3DUI");
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 	return status;
 }
